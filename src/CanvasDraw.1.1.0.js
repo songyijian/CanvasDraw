@@ -100,9 +100,7 @@
     		this.elMatrix = [1, 0, 0, 1, 0, 0];
     	};
     	
-    	
-    	
-    	//console.log(this.elMatrix)
+
     	if(this.data.scale && typeof this.data.scale==='object' && typeof this.data.scale.length === 'number'){
     		if(this.data.scale.length ===1){
     			this.elMatrix[0] = this.elMatrix[0]*this.data.scale[0];
@@ -111,9 +109,8 @@
     			this.elMatrix[0] = this.elMatrix[0]*this.data.scale[0];
     			this.elMatrix[3] = this.elMatrix[3]*this.data.scale[1];
     		};
-    		//console.log(this.data.scale)
     	};
-    	//console.log(this.elMatrix)
+ 
     	
     	this.boderSize={
     		x : parseFloat( getComputedStyle(this.el)['border-left-width'] ),
@@ -162,7 +159,6 @@
 	        touchEnd : _this.support.touch || !params.simulateTouch ? 'touchend' : desktopEvents[2]
 	    };*/
 
-    	
 	    //this.next_pos = {}; //记录下一点画笔位置
 	    
 	    //偏移量处理 bi bi bi...
@@ -271,14 +267,6 @@
 	
 
 	/*
-	 * 值得研究
-	 * requestAnimationFrame(step);
-    function step(){
-        loop();
-        requestAnimationFrame(step);
-    }*/
-
-	/*
 	 * 太着急了后面再看
 	CanvasDraw.prototype.draw=function () {
 	    console.log(this.pos.x, this.pos.y)
@@ -317,4 +305,3 @@ if (typeof(module) !== 'undefined'){
         return window.CanvasDraw;
     });
 }
-

@@ -1,11 +1,10 @@
-﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>canvas 画板</title>
-    <meta name="viewport" content="width=640,target-densitydpi=device-dpi,user-scalable=no">
-    <style>
+<meta charset="UTF-8">
+<title>canvas 画板</title>
+<meta name="viewport" content="width=640,target-densitydpi=device-dpi,user-scalable=no">
+<style>
         *{margin: 0;padding: 0; }
         html,body{ width: 640px; height: 100%;}
         canvas{}
@@ -18,29 +17,25 @@
         .box>div{ height:600px; width: 100%;  }
         .box p{height:80px; width: 100%; position: absolute; bottom: 0; left: 0; text-align: center;}
         button{ height:80px; width: 120px; background:#FFF; font-size: 30px; display: inline-block; }
-        
         #img_box{ border: 1px solid red;}
-    </style>
+</style>
 </head>
 <body>
-	
+	<h3>现在只支持触屏事件，后面再处理</h3>
 	<div class="box">
 		<div class="c">
 			<canvas id="canvas1" ></canvas>
 		</div>
 		<p><button class="create">生成</button><button class="remove">清理</button></p>
 	</div>
-	
 	<div class="box">
 		<div class="canvas2_box">
 			<canvas id="canvas2" ></canvas>
 		</div>
 		<p><button class="create">生成</button><button class="remove">清理</button></p>
 	</div>
-
 	<img id="img_box" src="" alt="" />
 	
-
 
     <script src="src/CanvasDraw.1.1.0.js"></script>
     <script>
@@ -61,6 +56,7 @@
         nremove[0].onclick=function(){  c1.clearRect() };
         
         
+        //发挥作用的时候到了
         var c2=new CanvasDraw('#canvas2',{
             'attr':{'width':400,'height':400}, 
 	        'lineWidth':4 ,
@@ -73,7 +69,5 @@
         nremove[1].onclick=function(){ c2.clearRect() }
 
     </script>
-
-
 </body>
 </html>

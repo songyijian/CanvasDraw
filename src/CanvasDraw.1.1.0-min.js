@@ -6,10 +6,10 @@
 	API
 		el	//string || node==='CANVAS' 必传
 		new CanvasDraw(el,{
-	        'attr':undefined, 	//json——对象属性设置 :{width:500,height:500}  undefined   
-	        'lineWidth':4 ,		//number——画笔宽度 
-	        'strokeStyle':'#000',//string——画笔颜色
-	        'scale':null,		//array 【x 缩放，y缩放】矫正父的缩放造成的偏针（自身变形不需要矫正）  -webkit-transform: scale(0.5,1)
+	        'attr':undefined, 				//json——对象属性设置 :{width:500,height:500}  undefined   
+	        'lineWidth':4 ,					//number——画笔宽度 
+	        'strokeStyle':'#000',			//string——画笔颜色
+	        'scale':null,					//array 【x 缩放，y缩放】矫正父的缩放造成的偏针（自身变形不需要矫正）  -webkit-transform: scale(0.5,1)
 	        'initFn':function(_this){},		//fn(_this)——返回this 初始化回调
 	        'startFn':function(_this){},	//fn(_this)——返回this 按下回调
 	        'moveFn':function(_this){},		//fn(_this)——返回this 移动回调
