@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>canvas 画板</title>
+<meta name="viewport" content="width=640,target-densitydpi=device-dpi,user-scalable=no">
+<style>
+        *{margin: 0;padding: 0; }
+        html,body{ width: 640px; height: 100%;}
+        canvas{}
+        #canvas1{border:10px solid #000000; position:relative; top:0%; left:0; -webkit-transform: scale(0.5,1); -webkit-transform-origin:0% 0%;}
+        #canvas2{border:10px solid #000000; background: #FFF;position:relative; top:0; left:0; }
+        .c{ margin:0;}
+        .canvas2_box{ -webkit-transform:translate(0) scale(0.7); -webkit-transform-origin:50% 50%;}
+   
+        .box{ height:700px; width: 100%; position: relative; }
+        .box>div{ height:600px; width: 100%;  }
+        .box p{height:80px; width: 100%; position: absolute; bottom: 0; left: 0; text-align: center;}
+        button{ height:80px; width: 120px; background:#FFF; font-size: 30px; display: inline-block; }
+        #img_box{ border: 1px solid red;}
+        
+        canvas{ border: 1px solid red;}
+</style>
+</head>
+<body>
+	
+	
+	<h3>现在只支持触屏事件，后面再处理</h3>
+	
+	<h3>* 1.2.0 版本 </h3>
+	<p>支持链式写法</p>
+	<p>getImg(true) 获取图像- （传参取墨水范围图像） 反之取整个画布区域</p>
+	
+	<div class="box">
+		<div class="c">
+			<canvas id="canvas1" ></canvas>
+		</div>
+		<p><button class="create">生成</button><button class="remove">清理</button></p>
+	</div>
+	<div class="box">
+		<div class="canvas2_box">
+			<canvas id="canvas2" ></canvas>
+		</div>
+		<p><button class="create">生成</button><button class="remove">清理</button></p>
+	</div>
+	<img id="img_box" src="" alt="" />
+	
+
+    <script src="src/CanvasDraw.1.2.0.js"></script>
+    <script>
+        var ncreate=document.querySelectorAll('.create');
+        var nremove=document.querySelectorAll('.remove');
+        var imgBox=document.getElementById('img_box');
+        
+        var c1=new CanvasDraw('#canvas1',{
+            'attr':{'width':500,'height':500}, 
+	        'lineWidth':2 ,			
+	        'strokeStyle':'red',
+	        'initFn':function(_this){},
+	        'moveFn':function(_this){}
+        });
+        ncreate[0].onclick=function(){
+        	imgBox.src=c1.getImg();
+        }
+        nremove[0].onclick=function(){  c1.clearRect() };
+        
+        
+        //发挥作用的时候到了
+        var c2=new CanvasDraw('#canvas2',{
+            'attr':{'width':400,'height':400}, 
+	        'lineWidth':4 ,
+	        'scale':[0.7],
+	        'strokeStyle':'red',
+	        'initFn':function(_this){},
+	        'moveFn':function(_this){}
+        });
+        ncreate[1].onclick=function(){ 
+        	imgBox.src=c2.getImg(true); 
+        }
+        
+        
+        
+        nremove[1].onclick=function(){ c2.clearRect() }
+
+    </script>
+</body>
+</html>

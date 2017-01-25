@@ -1,7 +1,7 @@
 ﻿/*
-	CanvasDraw 1.1.0  canvas 简易画板 /支持 amd
+	CanvasDraw 1.2.0  canvas 简易画板 /支持 amd
 	作者：songyijian 
-	发布：2016.11.24
+	发布：2017.01.25
 	
 	API
 		new CanvasDraw(el,{		//el //string || node==='CANVAS' 必传
@@ -16,18 +16,18 @@
 	    })
 	    
 	    FU: 
-	    	.init()		 初始化方法
-	    	.getImg()	 获取图像
-	    	.clearRect(x,y,w,h)	清除图像 默认全画布
+	    	.getImg(true)	 获取图像- （传参取墨水范围图像） 反之取整个画布区域
+	    	.clearRect(x,y,w,h)	清除图像(清楚区域)  不传参清理全画布
+	    	
 	    ATTR:
 	    	.ink 	画布是否被画过
-	    	.pos = {'x':0,'y':0}; 	//记录画笔相对画板上的位置
+	    	.pos = {'x':0,'y':0}; 	//实时反映画笔相对画板上的位置
+	    	.graffitiSize = {'xL':null,'xR':null,'yT':null,'yB':null};	//记录墨水区域的大小（有笔触区）
 	    	
 		注意：
 			* * 保证 canvas 对象在显示状态  创建对象 —— new CanvasDraw（） 【有得必有失，为了处理偏针  】
 			scale 指针（缩放）矫正 是针对父级的缩放照成的偏针 ，直接真对canvas的缩放变形不需要该参数配置矫正。   
 */
-
 !function(){
 	'sue strict'
 	function CanvasDraw(el,o){
@@ -35,7 +35,7 @@
 		    if(typeof el ==='string'){
 		    	if(!document.querySelector(el)){
 		    		console.error('look look el !!!') 
-		    		return false;   //滚粗
+		    		return ; 
 		    	};
 			    this.el=document.querySelector(el);
 			    
@@ -44,7 +44,7 @@
 		    }
 	    }else{
 	        console.error('look look el !!!') 
-	        return false;   //滚粗
+	        return ;   
 	    };
 	    
 	    this.data={
@@ -194,18 +194,34 @@
 	    });
 	    
 	    this.data.initFn(_this);
+	    
+	    return this;
 	};
 
 	CanvasDraw.prototype.startEvent=function(e){
 	    e = e.changedTouches[0];
 	    this.pos.x = (e.pageX - this.correctLeft )/this.elMatrix[0];
 	    this.pos.y = (e.pageY - this.correctTop)/this.elMatrix[3];
-   		this.getGraffitiSize();
+     	//this.getGraffitiSize();
+
 	    this.Context.beginPath();
 	    this.Context.strokeStyle = this.data.strokeStyle;
 	    this.Context.lineWidth = this.data.lineWidth;
 	    this.Context.lineCap = "round"; 
 	    this.Context.moveTo(this.pos.x,this.pos.y);
+	    
+	    if(this.graffitiSize.xL && this.graffitiSize.xR && this.graffitiSize.yT && this.graffitiSize.yB){
+	    	this.graffitiSize.xL = this.graffitiSize.xL > this.pos.x-this.scrap ?  this.pos.x-this.scrap : this.graffitiSize.xL;
+	    	this.graffitiSize.xR = this.graffitiSize.xR < this.pos.x+this.scrap ?  this.pos.x+this.scrap : this.graffitiSize.xR;
+	    	this.graffitiSize.yT = this.graffitiSize.yT > this.pos.y-this.scrap ?  this.pos.y-this.scrap : this.graffitiSize.yT;
+	    	this.graffitiSize.yB = this.graffitiSize.yB < this.pos.y+this.scrap ?  this.pos.y+this.scrap : this.graffitiSize.yB;
+	    }else{
+	    	this.graffitiSize.xL = this.pos.x - this.scrap;
+	    	this.graffitiSize.xR = this.pos.x + this.scrap;
+	    	this.graffitiSize.yT = this.pos.y - this.scrap;
+	    	this.graffitiSize.yB = this.pos.y + this.scrap;
+	    };
+	    return this;
 	};
 
 	CanvasDraw.prototype.moveEvent=function(e){
@@ -213,10 +229,23 @@
 	    this.isMove = true;
 	    this.pos.x = (e.pageX - this.correctLeft)/this.elMatrix[0];
 	    this.pos.y = (e.pageY - this.correctTop)/this.elMatrix[3];
-	    this.getGraffitiSize();
+	    
+	    if(this.graffitiSize.xL && this.graffitiSize.xR && this.graffitiSize.yT && this.graffitiSize.yB){
+	    	this.graffitiSize.xL = this.graffitiSize.xL > this.pos.x-this.scrap ?  this.pos.x-this.scrap : this.graffitiSize.xL;
+	    	this.graffitiSize.xR = this.graffitiSize.xR < this.pos.x+this.scrap ?  this.pos.x+this.scrap : this.graffitiSize.xR;
+	    	this.graffitiSize.yT = this.graffitiSize.yT > this.pos.y-this.scrap ?  this.pos.y-this.scrap : this.graffitiSize.yT;
+	    	this.graffitiSize.yB = this.graffitiSize.yB < this.pos.y+this.scrap ?  this.pos.y+this.scrap : this.graffitiSize.yB;
+	    }else{
+	    	this.graffitiSize.xL = this.pos.x - this.scrap;
+	    	this.graffitiSize.xR = this.pos.x + this.scrap;
+	    	this.graffitiSize.yT = this.pos.y - this.scrap;
+	    	this.graffitiSize.yB = this.pos.y + this.scrap;
+	    };
+	    
 	    this.Context.lineTo(this.pos.x,this.pos.y);
 	    //并不合并
 	    this.Context.stroke();
+	    return this;
 	};
 
 	CanvasDraw.prototype.endEvent=function(e){
@@ -229,27 +258,26 @@
             this.Context.fill();
 	    };
         this.ink = true;
-    	this.getGraffitiSize();
 	    this.isStart = this.isMove = false;
-	};
-	
-	CanvasDraw.prototype.getGraffitiSize=function(){
-	    if(this.graffitiSize.xL && this.graffitiSize.xR && this.graffitiSize.yT && this.graffitiSize.yB){
-	    	this.graffitiSize.xL = this.pos.x-this.scrap < this.graffitiSize.xL ?  this.pos.x-this.scrap : this.graffitiSize.xL;
-	    	this.graffitiSize.xR = this.pos.x+this.scrap > this.graffitiSize.xR ?  this.pos.x+this.scrap : this.graffitiSize.xR;
-	    	this.graffitiSize.yT = this.pos.y+this.scrap < this.graffitiSize.yT ?  this.pos.y+this.scrap : this.graffitiSize.yT;
-	    	this.graffitiSize.yB = this.pos.y-this.scrap < this.graffitiSize.yB ?  this.pos.y-this.scrap : this.graffitiSize.yB;
-	    }else{
-	    	this.graffitiSize.xL = this.pos.x - this.scrap;
-	    	this.graffitiSize.xR = this.pos.x + this.scrap;
-	    	this.graffitiSize.yT = this.pos.y - this.scrap;
-	    	this.graffitiSize.yB = this.pos.y + this.scrap;
-	    };
+	    return this;
 	};
 
 	//获取图片
-	CanvasDraw.prototype.getImg=function(){
-	    return this.el.toDataURL();
+	CanvasDraw.prototype.getImg=function(t){
+		var img = this.el.toDataURL();
+	    if(!t){
+		    return img;
+	    }else{
+	    	var mould = document.createElement('canvas')
+	    		,ct;
+	    		mould.setAttribute('width',this.graffitiSize.xR - this.graffitiSize.xL);
+	    		mould.setAttribute('height',this.graffitiSize.yB - this.graffitiSize.yT);
+		    	ct = mould.getContext('2d');
+	    		//document.body.appendChild(mould);
+		    	ct.drawImage(this.el, this.graffitiSize.xL, this.graffitiSize.yT, this.graffitiSize.xR - this.graffitiSize.xL, this.graffitiSize.yB - this.graffitiSize.yT, 0, 0,this.graffitiSize.xR - this.graffitiSize.xL, this.graffitiSize.yB - this.graffitiSize.yT);
+	    	
+	    	return mould.toDataURL();
+	    }
 	};
 	//清理
 	CanvasDraw.prototype.clearRect=function(x,y,w,h){
@@ -265,39 +293,10 @@
 	    this.Context.clearRect(x,y,w,h);
 	    this.Context.closePath();
 	    this.graffitiSize = {'xL':0,'xR':0,'yT':0,'yB':0};//清理掉
+	    return this;
 	};
 	
-
-	/*
-	 * 太着急了后面再看
-	CanvasDraw.prototype.draw=function () {
-	    console.log(this.pos.x, this.pos.y)
-	    console.log(this.next_pos.x, this.next_pos.y)
-	    //保存当前绘图状态
-	    this.Context.save();
-	    this.Context.fillStyle = this.data.fillStyle;
-	    this.Context.lineWidth = this.data.lineWidth;
-	    this.Context.lineCap = "round"; 
-	    //以远点为起点绘制前面相同的线段
-	    this.Context.beginPath();
-	    if (this.pos.x == this.next_pos.x && this.pos.y == this.next_pos.y) {
-	        //点一下绘制一个圆
-	        this.Context.arc(this.pos.x, this.pos.y, this.lineWidth / 1.7, 0, Math.PI * 2, true);
-	        this.Context.fill();
-	    } else {
-	        //常规路径处理
-	        this.Context.moveTo(this.pos.x, this.pos.y);
-	        this.Context.lineTo(this.next_pos.x, this.next_pos.y);
-	        //绘制到canvas上
-	        this.Context.stroke();
-	    };
-	    //this.hasDraw = true;
-	    //this.Context.restore(); 
-	}
-	*/
-
 	window.CanvasDraw = CanvasDraw;
-
 }()
 if (typeof(module) !== 'undefined'){
     module.exports = window.CanvasDraw;
