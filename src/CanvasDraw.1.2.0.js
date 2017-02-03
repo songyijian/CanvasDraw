@@ -4,7 +4,7 @@
 	发布：2017.01.25
 	
 	API
-		new CanvasDraw(el,{		//el //string || node==='CANVAS' 必传
+		new CanvasDraw(el,{		//el必传 	//string "#id" || node==='CANVAS' 
 	        'attr':undefined, 			//json——对象属性设置 :{width:500,height:500}  undefined   
 	        'lineWidth':4 ,				//number——画笔宽度 
 	        'strokeStyle':'#000',		//string——画笔颜色
